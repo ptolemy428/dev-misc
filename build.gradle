@@ -1,0 +1,25 @@
+apply plugin: 'groovy'
+
+group = "com.chedha.test"
+version = "0.0.1"
+
+targetCompatibility = "1.6"
+sourceCompatibility = "1.6"
+
+repositories {
+    maven {
+        url "C:\\_data\\development\\repositories\\.m2\\repository"
+    }
+//    mavenLocal()
+//    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.1.7'
+    testCompile 'junit:junit:4.11'
+}
+
+task('copy', type: Copy){
+    from(file('./build/libs/soapui-test-support-0.0.1.jar'))
+    into(file('C:\\_data\\development\\applications\\SoapUI-5.0.0\\bin\\ext'))
+}
