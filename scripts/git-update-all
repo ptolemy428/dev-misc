@@ -1,0 +1,304 @@
+#!/bin/sh
+
+GIT="`which git` -c color.diff=always -c color.branch=always -c color.ui=always -c color.status=always"
+GREP="`which grep`"
+SED="`which sed`"
+CYAN="\033[0;36m"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+MAGENTA="\033[0;35m"
+NO_COLOUR="\033[0m"
+
+opt_branch=""
+
+opt_show_help=false
+
+#
+# Process command line arguments and set global variables
+#
+function parse_command_line_arguments() {
+  OPTIND=1  # Reset in case getopts has been used previously in the shell.
+  while getopts "b:h" opt; do
+    case "$opt" in
+    b)
+      export opt_branch=$OPTARG
+      ;;
+    h)
+      export opt_show_help=true
+      ;;
+    esac
+  done
+}
+
+#
+# Returns 0 if a directory contains a valid git repo; 1 otherwise
+#
+# @param $1 path to a directory that might contain a git repo
+#
+function dir_contains_git_repo() {
+  pushd $1 > /dev/null
+  ls .git > /dev/null 2>&1
+  local result=$?
+  popd > /dev/null
+  return $result
+}
+
+#
+# Returns 0 if a git repo has a HEAD; 1 otherwise
+#
+# @param $1 path to a directory containing a git repo
+#
+function git_repo_has_head() {
+  pushd $1 > /dev/null
+  $GIT rev-parse HEAD > /dev/null 2>&1
+  local result=$?
+  popd > /dev/null
+  return $result
+}
+
+#
+# Returns 1 if a git repo contains unstaged changes; 0 otherwise
+#
+# @param $1 path to a directory containing a git repo
+#
+function git_repo_contains_no_unstaged_changes() {
+  pushd $1 > /dev/null
+  $GIT diff-index --quiet HEAD --
+  local result=$?
+  popd > /dev/null
+  return $result
+}
+
+#
+# Update the remotes for a git repo, returning 0 if successful; 1 otherwise
+#
+# @param $1 path to a directory containing a git repo
+#
+function update_remotes_for_git_repo() {
+  pushd $1 > /dev/null
+  $GIT remote update 2>&1 | $SED "s/^/    /" > /dev/null
+  local result=${PIPESTATUS[0]}
+  popd > /dev/null
+  return $result
+}
+
+
+#
+# Fetch changes for a git repo, returning 0 if successful; 1 otherwise
+#
+# @param $1 path to a directory containing a git repo
+#
+function fetch_changes_for_git_repo() {
+  pushd $1 > /dev/null
+  $GIT remote -v | $GREP origin > /dev/null
+  local result=${PIPESTATUS[1]}
+  if [ $result -ne 0 ]
+  then
+    popd > /dev/null
+    return 1
+  fi
+  $GIT fetch 2>&1 | $SED "s/^/    /"
+  result=${PIPESTATUS[0]}
+  popd > /dev/null
+  return $result
+}
+
+#
+# Check that the local branch has a corresponded remote branch, returning 0 if
+# a remote branch is avaiable, 0 otherwise.
+#
+# @param $1 path to a directory containing a git repo
+# @param $2 name of local branch to check
+#
+function git_repo_branch_can_be_merged() {
+  pushd $1 > /dev/null
+  $GIT remote show -n origin | $GREP "$2 merges with remote" > /dev/null
+  local result=$?
+  popd > /dev/null
+  return $result
+}
+
+#
+# Checkout a specific branch, returning 0 if successful; 1 otherwise.
+#
+# @param $1 path to a directory containing a git repo
+# @param $2 name of branch to checkout
+#
+function git_checkout_branch() {
+  pushd $1 > /dev/null
+  $GIT checkout $2 > /dev/null 2>&1
+  local result=${PIPESTATUS[0]}
+  popd > /dev/null
+  return $result
+}
+
+#
+# Check that an upstream branch is still present for the current branch,
+# returning 0 if the upstream branch is present; 1 otherwise.
+#
+# @param $1 path to a directory containing a git repo
+#
+function git_branch_has_upstream_branch() {
+  pushd $1 > /dev/null
+  $GIT status -uno | $GREP "but the upstream is gone" > /dev/null
+  local result=${PIPESTATUS[1]}
+  popd > /dev/null
+  if [ $result -ne 0 ]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
+#
+# Check for changes in the remote branch tracked by the current branch
+#
+# @param $1 path to a directory containing a git repo
+#
+function git_repo_has_changes_in_remote_branch() {
+  pushd $1 > /dev/null
+  $GIT status -uno | $GREP "Your branch is up-to-date" > /dev/null
+  local result=${PIPESTATUS[1]}
+  popd > /dev/null
+  if [ $result -ne 0 ]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
+#
+# Merge changes for a git repo, returning 0 if successful; 1 otherwise
+#
+# @param $1 path to a directory containing a git repo
+# @param $2 name of remote to pull from
+# @param $3 name of remote branch to pull from
+#
+function merge_changes_from_remote_branch() {
+  pushd $1 > /dev/null
+  $GIT merge $2/$3 2>&1 | $SED "s/^/    /"
+  local result=${PIPESTATUS[1]}
+  popd > /dev/null
+  return $result
+}
+
+#
+# Main
+#
+
+parse_command_line_arguments "$@"
+
+if [[ "$opt_show_help" == true ]]
+then
+  echo ""
+  echo "Usage:"
+  echo "  $0 [options]"
+  echo ""
+  echo "Options:"
+  echo "-b [branch]   Checkout the given branch for any repository where an appropriately"
+  echo "              named remote branch is available"
+  echo "-h            Show usage information (this page)"
+  echo ""
+  echo "If the -b option is omitted, then the current branch will be used."
+  echo ""
+  exit 1
+fi
+
+for dir in */
+do
+
+  # Remove trailing slash
+  dir=${dir%*/}
+
+  echo ""
+
+  if ! dir_contains_git_repo $dir
+  then
+    echo "${CYAN}${dir}${NO_COLOUR}:"
+    echo "  ${YELLOW}Warning: Skipping directory as it does not contain a git repo.${NO_COLOUR}"
+    continue
+  fi
+
+  if ! git_repo_has_head $dir
+  then
+    echo "${CYAN}${dir}${NO_COLOUR}:"
+    echo "  ${YELLOW}Warning: Skipping directory as it does not have a HEAD.${NO_COLOUR}"
+    continue
+  fi
+
+  pushd $dir > /dev/null
+  current_branch=`git rev-parse --abbrev-ref HEAD`
+  result=$?
+  popd > /dev/null
+  if [ $? -ne 0 ]
+  then
+    echo "${CYAN}${dir}${NO_COLOUR}:"
+    echo "  ${RED}Error: Failed to retrieve name of current branch.${NO_COLOUR}"
+    continue
+  fi
+
+  echo "${CYAN}${dir}${NO_COLOUR} ${MAGENTA}[$current_branch]${NO_COLOUR}:"
+
+  echo "  Updating remotes..."
+  if ! update_remotes_for_git_repo $dir
+  then
+    echo "  ${RED}Error: Failed to update remotes.${NO_COLOUR}"
+    continue
+  fi
+
+  echo "  Fetching changes for all branches..."
+  if ! fetch_changes_for_git_repo $dir
+  then
+    echo "  ${RED}Error: Failed to fetch changes.${NO_COLOUR}"
+    continue
+  fi
+
+  if ! git_repo_contains_no_unstaged_changes $dir
+  then
+    echo "  ${YELLOW}Warning: Skipping directory as it contains unstaged changes.${NO_COLOUR}"
+    continue
+  fi
+
+  if [ "$opt_branch" != "" ]
+  then
+    echo "  Checking out branch '$opt_branch'..."
+    if ! git_checkout_branch $dir $opt_branch
+    then
+      echo "  ${RED}Error: Failed to checkout branch.${NO_COLOUR}"
+      continue
+    fi
+    current_branch=$opt_branch
+  fi
+
+  if ! git_branch_has_upstream_branch $dir
+  then
+    echo "  ${RED}Error: Cannot merge changes as upstream branch is gone.${NO_COLOUR}"
+    continue
+  fi
+
+  echo "  Checking for changes in remote branch..."
+  if ! git_repo_has_changes_in_remote_branch $dir
+  then
+    echo "  Branch is already up-to-date."
+    continue
+  fi
+
+  if ! git_repo_branch_can_be_merged $dir $current_branch
+  then
+    echo "  ${YELLOW}Warning: Skipping directory as local branch does not have a corresponding remote branch.${NO_COLOUR}"
+    continue
+  fi
+
+  echo "  Merging changes for branch '$current_branch'..."
+  if ! merge_changes_from_remote_branch $dir origin $current_branch
+  then
+    echo "  ${RED}Error: Failed to merge changes from remote branch.${NO_COLOUR}"
+    continue
+  fi
+
+done
+
+echo "${NO_COLOUR}"
