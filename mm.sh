@@ -34,3 +34,6 @@ alias vmdown='VBoxManage controlvm MessageMediaDev poweroff'
 
 #intellij in work-around
 . $dev_root/dev-misc/scripts/idea-lin.sh
+
+#docker cmd alias
+. $dev_root/dev-misc/docker_cmd.sh
