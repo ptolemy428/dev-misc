@@ -5,7 +5,7 @@ dev_root=/home/larry/development
 export JAVA_HOME=$dev_root/applications/java/jdk1.7.0_71
 
 
-export SCALA_HOME=$dev_root/applications/scala/scala-2.11.2
+export SCALA_HOME=$dev_root/applications/scala/scala-2.11.4
 export IDEA_HOME=$dev_root/applications/intellij/idea-IU-139.224.1
 export GROOVY_HOME=$dev_root/applications/groovy/groovy-2.3.0
 export GRADLE_HOME=$dev_root/applications/gradle/gradle-2.1
