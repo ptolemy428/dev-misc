@@ -11,10 +11,11 @@ export GROOVY_HOME=$dev_root/applications/groovy/groovy-2.3.0
 export GRADLE_HOME=$dev_root/applications/gradle/gradle-2.1
 export PLAY_HOME=$dev_root/applications/play/activator-1.2.10-minimal
 export M2_HOME=$dev_root/applications/maven/apache-maven-3.2.3
+export BIN_HOME=$dev_root/dev-misc/bin
 
 export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
 
-PATH=$PATH:$JAVA_HOME/bin:$IDEA_HOME/bin:$M2_HOME/bin:$GRADLE_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$GROOVY_HOME/bin:$PLAY_HOME:$M2_HOME/bin
+PATH=$PATH:$JAVA_HOME/bin:$IDEA_HOME/bin:$M2_HOME/bin:$GRADLE_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$GROOVY_HOME/bin:$PLAY_HOME:$M2_HOME/bin:$BIN_HOME
 export PATH
 
 alias ll='ls -la'
@@ -26,6 +27,8 @@ alias i='idea.sh &'
 alias sj='cd $dev_root/playpen/play2'
 alias m='cd $dev_root/git-mm'
 alias aws='~/bin/aws'
+
+#virtual box commands
 alias vmup='VBoxManage startvm MessageMediaDev'
 alias vmdown='VBoxManage controlvm MessageMediaDev poweroff'
 
@@ -35,5 +38,5 @@ alias vmdown='VBoxManage controlvm MessageMediaDev poweroff'
 #intellij in work-around
 . $dev_root/dev-misc/scripts/idea-lin.sh
 
-#docker cmd alias
-. $dev_root/dev-misc/docker_cmd.sh
+#docker alias
+. $dev_root/dev-misc/scripts/docker_cmd.sh
