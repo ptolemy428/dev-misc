@@ -10,8 +10,8 @@ fi
 
 
 export SCALA_HOME=$dev_root/applications/scala/scala-2.11.4
-export IDEA_HOME=$dev_root/applications/intellij/idea-IU-139.224.1
-export GROOVY_HOME=$dev_root/applications/groovy/groovy-2.3.0
+export IDEA_HOME=$dev_root/applications/intellij/idea-IU-139.659.2
+export GROOVY_HOME=$dev_root/applications/groovy/groovy-2.4.0-rc-1
 export GRADLE_HOME=$dev_root/applications/gradle/gradle-2.1
 export PLAY_HOME=$dev_root/applications/play/activator-1.2.10-minimal
 export M2_HOME=$dev_root/applications/maven/apache-maven-3.2.3
