@@ -1,0 +1,3 @@
+git config --global user.name "Larry Liang"
+git config --global user.email ptolemy428@gmail.com
+git config --global core.excludesfile /home/larry/development/dev-misc/.gitignore

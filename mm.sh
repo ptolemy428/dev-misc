@@ -30,7 +30,7 @@ alias vmup='VBoxManage startvm MessageMediaDev'
 alias vmdown='VBoxManage controlvm MessageMediaDev poweroff'
 
 #set up aws env for mm
-#. $dev_root/aws/mm/aws-mm.sh
+. $dev_root/aws/mm/aws-mm.sh
 
 #intellij in work-around
 . $dev_root/dev-misc/scripts/idea-lin.sh
