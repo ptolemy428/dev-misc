@@ -22,7 +22,7 @@ alias dev='cd $dev_root/'
 alias apps='cd $dev_root/applications/'
 alias i='idea.sh &'
 alias sj='cd $dev_root/playpen/play2'
-alias m='cd $dev_root/git-mm'
+alias m='cd $dev_root/mm/git-mm'
 alias aws='~/bin/aws'
 
 #virtual box commands

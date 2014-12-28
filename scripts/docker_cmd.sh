@@ -8,6 +8,6 @@ alias dynamo-server='docker run -d --name dynamo -p 7999:7999 ptolemy428/docker-
 
 alias rm-containers='sudo docker rm $(sudo docker ps -a -q)'
 
-alias vmsdown='sudo docker stop $(sudo docker ps -a -q)'
+alias vmsdown='sudo docker stop $(sudo docker ps -a -q) && rm-containers'
 
 alias vmsup='sudo redis-server && sudo rabbitmq-server && sudo dynamo-server'
