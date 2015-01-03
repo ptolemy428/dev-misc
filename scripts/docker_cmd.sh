@@ -1,3 +1,6 @@
+
+dev_root=/home/larry/development
+
 alias sudo='sudo '
 #redis
 alias redis-server='docker run -d --name redis -p 6379:6379 dockerfile/redis'
@@ -14,4 +17,4 @@ alias rm-containers='sudo docker rm $(sudo docker ps -a -q)'
 alias vmsdown='sudo docker stop $(sudo docker ps -a -q) && rm-containers'
 alias vmsup='sudo redis-server && sudo rabbitmq-server && sudo dynamo-server'
 #aws
-alias aws='sudo docker run -it -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION ptolemy428/docker-aws-cli /bin/bash'
+alias aws='sudo docker run -it -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION -v $dev_root/aws/scripts:/root/aws ptolemy428/docker-aws-cli /bin/bash'
