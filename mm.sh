@@ -1,14 +1,22 @@
 #!/bin/bash
 
-dev_root=/home/larry/development
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+      SOURCE="$(readlink "$SOURCE")"
+        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+      done
+      DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-export JAVA_HOME=$dev_root/applications/java/jdk1.7.0_71
+source $DIR/base.sh
 
-export SCALA_HOME=$dev_root/applications/scala/scala-2.11.4
-export IDEA_HOME=$dev_root/applications/intellij/idea-IU-139.659.2
-export GROOVY_HOME=$dev_root/applications/groovy/groovy-2.4.0-rc-1
-export M2_HOME=$dev_root/applications/maven/apache-maven-3.2.3
-export BIN_HOME=$dev_root/dev-misc/bin
+export JAVA_HOME=$DEV_ROOT/applications/java/jdk1.7.0_71
+
+export SCALA_HOME=$DEV_ROOT/applications/scala/scala-2.11.4
+export IDEA_HOME=$DEV_ROOT/applications/intellij/idea-IU-139.659.2
+export GROOVY_HOME=$DEV_ROOT/applications/groovy/groovy-2.4.0-rc-1
+export M2_HOME=$DEV_ROOT/applications/maven/apache-maven-3.2.3
+export BIN_HOME=$DEV_ROOT/dev-misc/bin
 
 export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
 
@@ -17,12 +25,12 @@ export PATH
 
 alias ll='ls -la'
 alias lt='ls -ltr'
-alias pj='cd $dev_root/playpen'
-alias dev='cd $dev_root/'
-alias apps='cd $dev_root/applications/'
+alias pj='cd $DEV_ROOT/playpen'
+alias dev='cd $DEV_ROOT/'
+alias apps='cd $DEV_ROOT/applications/'
 alias i='idea.sh &'
-alias sj='cd $dev_root/playpen/play2'
-alias m='cd $dev_root/mm/git-mm'
+alias sj='cd $DEV_ROOT/playpen/play2'
+alias m='cd $DEV_ROOT/mm/git-mm'
 alias aws='~/bin/aws'
 
 #virtual box commands
@@ -30,10 +38,10 @@ alias vmup='VBoxManage startvm MessageMediaDev'
 alias vmdown='VBoxManage controlvm MessageMediaDev poweroff'
 
 #set up aws env for mm
-. $dev_root/aws/mm/aws-mm.sh
+. $DEV_ROOT/aws/mm/aws-mm.sh
 
 #intellij in work-around
-. $dev_root/dev-misc/scripts/idea-lin.sh
+. $DEV_ROOT/dev-misc/scripts/idea-lin.sh
 
 #docker alias
-. $dev_root/dev-misc/scripts/docker_cmd.sh
+. $DEV_ROOT/dev-misc/scripts/docker_cmd.sh
