@@ -13,7 +13,7 @@ source $DIR/base.sh
 if [ "$1" == "8" ]; then
 	export JAVA_HOME=$DEV_ROOT/applications/java/jdk1.8.0_25
 else
-	export JAVA_HOME=$DEV_ROOT/applications/java/jdk1.7.0_71
+	export JAVA_HOME=$DEV_ROOT/applications/java/jdk1.7.0_72
 fi
 
 
@@ -27,14 +27,14 @@ export M2_HOME=$DEV_ROOT/applications/maven/apache-maven-3.2.3
 PATH=$PATH:$JAVA_HOME/bin:$IDEA_HOME/bin:$M2_HOME/bin:$GRADLE_HOME/bin:$SCALA_HOME/bin:$SBT_HOME/bin:$GROOVY_HOME/bin:$PLAY_HOME:$M2_HOME/bin
 export PATH
 
-alias ll='ls -la'
-alias lt='ls -ltr'
-alias pj='cd $DEV_ROOT/playpen'
-alias dev='cd $DEV_ROOT/'
-alias apps='cd $DEV_ROOT/applications/'
-alias i='idea.sh &'
-alias vmup='VBoxManage startvm dev'
-alias vmdown='VBoxManage controlvm dev poweroff'
+alias ll="ls -la"
+alias lt="ls -ltr"
+alias pj="cd $DEV_ROOT/playpen"
+alias dev="cd $DEV_ROOT/"
+alias apps="cd $DEV_ROOT/applications/"
+alias i="idea.sh &"
+alias vmup="VBoxManage startvm dev"
+alias vmdown="VBoxManage controlvm dev poweroff"
 
 
 #set up aws env
