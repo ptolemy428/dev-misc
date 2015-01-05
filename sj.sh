@@ -36,6 +36,8 @@ alias i="idea.sh &"
 alias vmup="VBoxManage startvm dev"
 alias vmdown="VBoxManage controlvm dev poweroff"
 
+#set up docker containers
+. $DEV_ROOT/dev-misc/scripts/docker_base.sh
 
 #set up aws env
 . $DEV_ROOT/aws/c2014/aws-c2014.sh

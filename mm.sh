@@ -44,4 +44,4 @@ alias vmdown="VBoxManage controlvm MessageMediaDev poweroff"
 . $DEV_ROOT/dev-misc/scripts/idea-lin.sh
 
 #docker alias
-. $DEV_ROOT/dev-misc/scripts/docker_cmd.sh
+. $DEV_ROOT/dev-misc/scripts/docker_mm.sh
